@@ -1,3 +1,5 @@
+import UnidocKeys._
+
 val commonSettings = android.Plugin.androidBuildAar ++ Seq(
   platformTarget in Android := "android-21",
 
@@ -8,6 +10,7 @@ val commonSettings = android.Plugin.androidBuildAar ++ Seq(
   scalaVersion := "2.10.5",
   crossScalaVersions := Seq("2.10.5", "2.11.6"),
   scalacOptions ++= Seq("-feature", "-deprecation"),
+  autoAPIMappings := true,
 
   libraryDependencies += "org.scalatest" %% "scalatest" % "2.1.5" % "test"
 )
@@ -66,7 +69,9 @@ lazy val akka = (project in file("macroid-akka"))
 
 lazy val root = (project in file("."))
   .aggregate(core, viewable, akka)
+  .settings(unidocSettings: _*)
   .settings(
+    scalacOptions in (ScalaUnidoc, unidoc) += "-Ymacro-no-expand",
     scalacOptions in (Compile, doc) ++= Seq(
       "-sourcepath", baseDirectory.value.getAbsolutePath,
       "-doc-source-url", "https://github.com/macroid/macroid/tree/master€{FILE_PATH}.scala"
