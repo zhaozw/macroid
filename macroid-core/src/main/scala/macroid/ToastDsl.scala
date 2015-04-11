@@ -22,21 +22,21 @@ object Loafs extends Loafs
 
 private[macroid] trait ToastBuilding {
   /** Create a toast with the specified text */
-  def toast(text: CharSequence)(implicit ctx: AppContext): Ui[Toast] =
+  def toast(text: CharSequence)(implicit ctx: ContextWrapper): Ui[Toast] =
     Ui(Toast.makeText(ctx.get, text, Toast.LENGTH_SHORT))
 
   /** Create a toast with the specified resource ID */
-  def toast(text: Int)(implicit ctx: AppContext): Ui[Toast] =
+  def toast(text: Int)(implicit ctx: ContextWrapper): Ui[Toast] =
     Ui(Toast.makeText(ctx.get, text, Toast.LENGTH_SHORT))
 
   /** Create a toast with either the specified text or the specified resource ID */
-  def toast(text: Either[Int, CharSequence])(implicit ctx: AppContext): Ui[Toast] = text match {
+  def toast(text: Either[Int, CharSequence])(implicit ctx: ContextWrapper): Ui[Toast] = text match {
     case Right(t) => Ui(Toast.makeText(ctx.get, t, Toast.LENGTH_SHORT))
     case Left(t) => Ui(Toast.makeText(ctx.get, t, Toast.LENGTH_SHORT))
   }
 
   /** Create a toast with the specified view */
-  def toast(view: Ui[View])(implicit ctx: AppContext): Ui[Toast] =
+  def toast(view: Ui[View])(implicit ctx: ContextWrapper): Ui[Toast] =
     view.map(v ⇒ new Toast(ctx.get) { setView(v); setDuration(Toast.LENGTH_SHORT) })
 }
 

@@ -2,7 +2,7 @@ val commonSettings = androidBuildAar ++ bintrayPublishSettings ++ Seq(
   platformTarget in Android := "android-21",
 
   organization := "org.macroid",
-  version := "2.0.0-M4",
+  version := "2.0.0-SNAPSHOT",
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
 
   scalaVersion := "2.10.5",

@@ -6,16 +6,16 @@ two types of context: one obtained from an activity
 and one obtained from the application. The reason is that holding on to the activity context
 may cause [memory leaks](http://stackoverflow.com/questions/3346080/android-references-to-a-context-and-memory-leaks).
 
-*Macroid* distinguishes between these two types of Context and passes them implicitly to prevent code bloat.
+*Macroid* automatically stores `Activity` and `Service` contexts as weak references, avoiding the problem.
+This is done with the `ContextWrapper` class, which has two methods:
 
-## What are they
-
-* `macroid.AppContext` holds the application context;
-* `macroid.ActivityContext` holds a weak reference to the activity context, so that it’s safe to store it.
+* `contextWrapper.appContext` will always return the application context;
+* `contextWrapper.get` will return the original context passed to `ContextWrapper`,
+  unless it was not garbage collected, in which case it defaults to `appContext`.
 
 ## Including
 
-To include the implicit contexts in your activity, inherit `Contexts`:
+To include the implicit context in your activity, inherit `Contexts`:
 
 ```scala
 import macroid.Contexts
@@ -42,24 +42,28 @@ class MyFragment extends Fragment with Contexts[Fragment] {
 }
 ```
 
+You can also construct a `ContextWrapper` directly:
+
+```scala
+val ctx = ContextWrapper(myActivity)
+```
+
 ## Usage
 
-Most *Macroid* APIs require one or two of these contexts. If you use them inside an 
-activity or a fragment, you are golden. However sometimes you need to pass the contexts
+Most *Macroid* APIs require an implicit `ContextWrapper`. If you use them inside an
+activity or a fragment, you are golden. However sometimes you need to pass the context
 to other methods:
 
 ```scala
-import macroid.{ AppContext, ActivityContext }
+import macroid.ContextWrapper
 import macroid.FullDsl._
 import macroid.contrib._
 
-def customTweak(implicit appCtx: AppContext) =
-  // this one requires AppContext
+def customTweak(implicit ctx: ContextWrapper) =
   TextTweaks.large +
   text("foo")
 
-def customLayout(implicit ctx: ActivityContext) =
-  // layout bricks require ActivityContext
+def customLayout(implicit ctx: ContextWrapper) =
   l[LinearLayout](
     w[TextView],
     w[Button]

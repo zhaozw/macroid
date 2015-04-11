@@ -1,14 +1,14 @@
 package macroid
 
+import android.content.Context
 import org.scalatest.FlatSpec
-import android.app.Activity
 import android.widget.TextView
 import LayoutDsl._
 import Tweaks._
 import Snails._
 
 class UiSpec extends FlatSpec {
-  implicit val ctx = ActivityContext(null: Activity)
+  implicit val ctx = ContextWrapper(None, null: Context)
 
   "UI actions" should "be composable" in {
     def foo = {
